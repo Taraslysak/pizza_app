@@ -2,10 +2,11 @@ from django.db import models
 
 # Create your models here.
 class Meal(models.Model):
-    meal_name = models.CharField(max_length=64)
+    meal_name = models.CharField(max_length=128)
+    price = models.FloatField()
 
     def __str__(self):
-        return f'{self.meal_name}'
+        return f'Name: {self.meal_name}. Price: {self.price} '
 
 
 class Meal_size(models.Model):

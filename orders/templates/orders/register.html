@@ -1,0 +1,28 @@
+{% extends "orders/basic.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block main%}
+
+    {% if message %}
+        <h1>{{message}}</h1>
+    {% endif %}
+
+
+    {% if submition_result %}
+        {% for row in submition_result %}
+            <h3>{{ row }}</h3>
+        {% endfor %}
+    {% endif %}
+    
+    <form action="{% url 'register' %}" method="POST">
+
+        {% csrf_token %}
+        {{ form }}
+
+        <input type="submit" value="Register">
+
+    </form>
+    
+
+{% endblock %}
