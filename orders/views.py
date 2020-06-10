@@ -9,15 +9,39 @@ from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 
-from .models import Pizza, Meal_size
+#from .models import Pizza, Meal_size, Sub, Salad, Pasta, Dinner_Platter, Topping, Extra, Pizza_style, Pizza_option
 from .forms import RegisterForm, LoginForm
 
 # Create your views here.
 @login_required(login_url='/login')
 def index(request):
-    context = {'pizzas': Pizza.objects.all(),
-        'sizes': Meal_size.objects.all()
-    }
+
+    # sizes = Meal_size.objects.all()
+    # pizza_styles = Pizza_style.objects.all()
+    # pizza_options = Pizza_option.objects.all()
+    
+    # pizzas = {}
+
+    # for pizza_style in pizza_styles:
+    #     style = {}
+    #     for pizza_option in pizza_options:
+    #         option = {}
+    #         for size in sizes:
+    #             option[size.size] = Pizza.of_type_option_and_size(pizza_style, pizza_option, size)
+    #         style[pizza_option.option] = option    
+    #     pizzas[pizza_style.style] = style
+    
+
+    context = None
+    # {'pizzas': pizzas,
+    #     'sizes': sizes,
+    #     'subs': Sub.objects.all(),
+    #     'salads': Salad.objects.all(),
+    #     'pastas': Pasta.objects.all(),
+    #     'dinner_platters': Dinner_Platter.objects.all(),
+    #     'toppings': Topping.objects.all(),
+    # }
+    
     return render(request, "orders/index.html", context)
 
 

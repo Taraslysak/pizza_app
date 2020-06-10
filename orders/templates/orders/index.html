@@ -12,11 +12,71 @@
     </ul>
     {% endif %}
 
-    {% for pizza in pizzas%}
-            <h2>{{ pizza }}</h2>
-    {% endfor %}
-    {% for size in sizes %}
-        <h2>{{size}}</h2>
+    <h3 class="meal-group">Pizzas</h3>
+    {% for style, style_options in pizzas.items %}
+        
+        <h3 class="meal-group_title">{{style}}</h3>
+        <table class="meal-table">
+            <thead>
+                <th></th>
+                {% for size in sizes %}
+                    <th>{{size}}</th>
+                {% endfor %}
+            </thead>
+            <tbody>
+                {% for option, option_sizes in style_options.items %}
+                    <tr>
+                        <td>{{option}}</td>
+                        {% for pizza in option_sizes.values %}
+
+                            <td>
+                                {{pizza.price}}
+                                <button class="update-cart" data-meal="{{salad.id}}">Add to cart</button>
+                            </td>
+
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
     {% endfor %}
 
+    <div class="meal-group">
+        <h3 class="meal-groupt_title">Toppings</h3>
+        <ul class="meal-list">
+            {% for topping in toppings %}
+
+            <li class="meal-item"> {{topping.topping}} </li>
+
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="meal-group">
+        <h3 class="meal-group_title">Salads</h3>
+        <ul class="meal-list">
+            {% for salad in salads %}
+
+            <li class="meal-item"> 
+                <div class="meal-name">{{salad.name}}</div>
+                <div class="meal-price">{{salad.price}}$</div>
+                <button class="update-cart" data-meal="{{salad.id}}">Add to cart</button> 
+            </li>
+
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="meal-group">
+        <h3 class="meal-group">Pastas</h3>
+        <ul class="meal-list">
+            {% for pasta in pastas %}
+
+            <li class="meal-item"> {{pasta.name}} {{pasta.price}}</li>
+
+            {% endfor %}
+        </ul>
+    </div>
+  
 {% endblock %}

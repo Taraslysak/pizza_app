@@ -1,0 +1,14 @@
+{% extends 'orders/basic.html' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block main %}
+
+    <div class="container">
+        <form action="{{ url 'checkout' }}" class="customer-form"></form>
+        <div class="items">
+            
+        </div>
+    </div>
+
+{% endblock %}
