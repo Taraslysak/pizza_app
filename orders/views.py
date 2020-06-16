@@ -1,49 +1,49 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-from django.contrib.auth.models import User
+
 from django.db import IntegrityError
-from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.http import require_http_methods
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 from django.contrib import messages
-from django.views.decorators.http import require_http_methods
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
-#from .models import Pizza, Meal_size, Sub, Salad, Pasta, Dinner_Platter, Topping, Extra, Pizza_style, Pizza_option
+
+
+from .models import Pizza, MealSize, Sub, Salad, Pasta, DinnerPlatter, PizzaTopping, SubExtra, PizzaOption, Order, OrderItem, Meal
 from .forms import RegisterForm, LoginForm
 
 # Create your views here.
 @login_required(login_url='/login')
 def index(request):
 
-    # sizes = Meal_size.objects.all()
-    # pizza_styles = Pizza_style.objects.all()
-    # pizza_options = Pizza_option.objects.all()
-    
-    # pizzas = {}
-
-    # for pizza_style in pizza_styles:
-    #     style = {}
-    #     for pizza_option in pizza_options:
-    #         option = {}
-    #         for size in sizes:
-    #             option[size.size] = Pizza.of_type_option_and_size(pizza_style, pizza_option, size)
-    #         style[pizza_option.option] = option    
-    #     pizzas[pizza_style.style] = style
-    
-
-    context = None
-    # {'pizzas': pizzas,
-    #     'sizes': sizes,
-    #     'subs': Sub.objects.all(),
-    #     'salads': Salad.objects.all(),
-    #     'pastas': Pasta.objects.all(),
-    #     'dinner_platters': Dinner_Platter.objects.all(),
-    #     'toppings': Topping.objects.all(),
-    # }
+    context = {'pizzas': Pizza.display_as_menu(),
+        'sizes': MealSize.objects.all(),
+        'subs': Sub.display_as_menu(),
+        'salads': Salad.display_as_menu(),
+        'pastas': Pasta.display_as_menu(),
+        'dinner_platters': DinnerPlatter.display_as_menu(),
+        'toppings': PizzaTopping.objects.all(),
+        'cart_items_count': Order.get_items_count(customer=request.user, issued=False),
+    }
     
     return render(request, "orders/index.html", context)
 
+
+@login_required
+def update_cart(request, meal_id):
+    order = Order.objects.get_or_create(customer=f'{request.user}', issued=False)[0]
+    meal = Meal.objects.get(pk=meal_id)
+    order_item = OrderItem.objects.create(order=order, meal=meal)
+    
+    order.items.add(order_item)
+
+    print(order)
+    data = {'answer': f'we`ve got smth! {meal_id}'}
+
+    return JsonResponse(data)
 
 def register_view(request):
     if request.method == 'POST':

@@ -1,21 +1,81 @@
 {% extends "orders/basic.html" %}
 
+{% load static %}
+
 {% block title %}Menu{% endblock %}
+
+{% block greeting %}
+    
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        {{ request.user }}
+    {% endif %}
+
+{% endblock %}
+
+{% block cart %}
+
+        <div class="cart-area">
+            <button class="button cart-icon-button">
+                <img src="{% static 'orders/images/cart-icon.png' %}" alt="" class="cart-icon-image">
+            </button>
+            <div class="cart-status">{% if cart_items_count %}{{ cart_items_count}}{% endif %}</div>
+        </div>
+
+{% endblock %}
+
 
 {% block main %}
 
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    <div class="meal-group">
+        <h3 class="meal-group_title">Pizzas</h3>
+        {% for style, style_options in pizzas.items %}
+            
+            <h3 class="meal-group_title">{{style}}</h3>
+            <table class="meal-table">
+                <thead>
+                    <th></th>
+                    {% for size in sizes %}
+                        <th>{{size}}</th>
+                    {% endfor %}
+                </thead>
+                <tbody>
+                    {% for option, option_sizes in style_options.items %}
+                        <tr>
+                            <td>{{option}}</td>
+                            {% for pizza in option_sizes.values %}
 
-    <h3 class="meal-group">Pizzas</h3>
-    {% for style, style_options in pizzas.items %}
+                                <td>
+                                    {{pizza.price|floatformat:2}}
+                                    <button class="update-cart" data-meal="{{pizza.id}}">Add to cart</button>
+                                </td>
+
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %} 
+    </div>
         
-        <h3 class="meal-group_title">{{style}}</h3>
+    <div class="meal-group">
+        <h3 class="meal-groupt_title">Toppings</h3>
+        <ul class="meal-list">
+            {% for topping in toppings %}
+
+            <li class="meal-item"> {{topping.name}} </li>
+
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="meal-group">
+        <h3 class="meal-grou_title">Subs</h3>
         <table class="meal-table">
             <thead>
                 <th></th>
@@ -24,34 +84,26 @@
                 {% endfor %}
             </thead>
             <tbody>
-                {% for option, option_sizes in style_options.items %}
+                {% for sub, sub_sizes in subs.items %}
                     <tr>
-                        <td>{{option}}</td>
-                        {% for pizza in option_sizes.values %}
+                        <td>{{sub}}</td>
+                        {% for sub_size in sub_sizes.values %}
 
-                            <td>
-                                {{pizza.price}}
-                                <button class="update-cart" data-meal="{{salad.id}}">Add to cart</button>
-                            </td>
-
+                            {% if sub_size %}
+                                <td>
+                                    {{sub_size.price|floatformat:2}}
+                                    <button class="update-cart" data-meal="{{sub_size.id}}">Add to cart</button>
+                                </td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
                         {% endfor %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-
-    {% endfor %}
-
-    <div class="meal-group">
-        <h3 class="meal-groupt_title">Toppings</h3>
-        <ul class="meal-list">
-            {% for topping in toppings %}
-
-            <li class="meal-item"> {{topping.topping}} </li>
-
-            {% endfor %}
-        </ul>
     </div>
+    
 
     <div class="meal-group">
         <h3 class="meal-group_title">Salads</h3>
@@ -60,7 +112,7 @@
 
             <li class="meal-item"> 
                 <div class="meal-name">{{salad.name}}</div>
-                <div class="meal-price">{{salad.price}}$</div>
+                <div class="meal-price">{{salad.price|floatformat:2}}$</div>
                 <button class="update-cart" data-meal="{{salad.id}}">Add to cart</button> 
             </li>
 
@@ -73,10 +125,50 @@
         <ul class="meal-list">
             {% for pasta in pastas %}
 
-            <li class="meal-item"> {{pasta.name}} {{pasta.price}}</li>
+            <li class="meal-item"> 
+                <div class="meal-name">{{pasta.name}}</div>
+                <div class="meal-price">{{pasta.price|floatformat:2}}$</div>
+                <button class="update-cart" data-meal="{{pasta.id}}">Add to cart</button> 
+            </li>
 
             {% endfor %}
         </ul>
     </div>
-  
+
+    <div class="meal-group">
+        <h3 class="meal-grou_title">Dinner Platters</h3>
+        <table class="meal-table">
+            <thead>
+                <th></th>
+                {% for size in sizes %}
+                    <th>{{size}}</th>
+                {% endfor %}
+            </thead>
+            <tbody>
+                {% for dinner_platter, dinner_platter_sizes in dinner_platters.items %}
+                    <tr>
+                        <td>{{dinner_platter}}</td>
+                        {% for dinner_platter_size in dinner_platter_sizes.values %}
+    
+                            <td>
+                                {{dinner_platter_size.price|floatformat:2}}
+                                <button class="update-cart" data-meal="{{dinner_platter_size.id}}">Add to cart</button>
+                            </td>
+    
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="cart-view">
+        <div class="cart-container">
+            <div class="cart-items">
+                Shop items should go here
+            </div>
+            <button class='button button-checkout'>Checkout</button>
+        </div>
+        
+    </div>
 {% endblock %}

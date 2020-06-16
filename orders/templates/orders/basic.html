@@ -13,8 +13,9 @@
 <body>
     <header class="header">
         <div class="logo">CS50 PIZZA</div>
-        <div class="user"></div>
-        <button class="button-logout">Logout</button>
+        <div class="user">{% block greeting %}{% endblock %}</div>
+        {% block cart %}{% endblock %}
+        <button class="button button-logout">Logout</button>
     </header>
     <hr>
     {% block main %}{% endblock %}
