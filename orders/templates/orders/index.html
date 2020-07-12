@@ -20,7 +20,7 @@
 
 {% block cart %}
 
-        <div class="cart-area">
+        <div class="cart-button-area">
             <button class="button cart-icon-button">
                 <img src="{% static 'orders/images/cart-icon.png' %}" alt="" class="cart-icon-image">
             </button>
@@ -52,7 +52,7 @@
 
                                 <td>
                                     {{pizza.price|floatformat:2}}
-                                    <button class="update-cart" data-meal="{{pizza.id}}">Add to cart</button>
+                                    <button class="update-cart" data-meal_id="{{pizza.id}}">Add to cart</button>
                                 </td>
 
                             {% endfor %}
@@ -92,7 +92,7 @@
                             {% if sub_size %}
                                 <td>
                                     {{sub_size.price|floatformat:2}}
-                                    <button class="update-cart" data-meal="{{sub_size.id}}">Add to cart</button>
+                                    <button class="update-cart" data-meal_id="{{sub_size.id}}">Add to cart</button>
                                 </td>
                             {% else %}
                                 <td></td>
@@ -113,7 +113,7 @@
             <li class="meal-item"> 
                 <div class="meal-name">{{salad.name}}</div>
                 <div class="meal-price">{{salad.price|floatformat:2}}$</div>
-                <button class="update-cart" data-meal="{{salad.id}}">Add to cart</button> 
+                <button class="update-cart" data-meal_id="{{salad.id}}">Add to cart</button> 
             </li>
 
             {% endfor %}
@@ -128,7 +128,7 @@
             <li class="meal-item"> 
                 <div class="meal-name">{{pasta.name}}</div>
                 <div class="meal-price">{{pasta.price|floatformat:2}}$</div>
-                <button class="update-cart" data-meal="{{pasta.id}}">Add to cart</button> 
+                <button class="update-cart" data-meal_id="{{pasta.id}}">Add to cart</button> 
             </li>
 
             {% endfor %}
@@ -152,7 +152,7 @@
     
                             <td>
                                 {{dinner_platter_size.price|floatformat:2}}
-                                <button class="update-cart" data-meal="{{dinner_platter_size.id}}">Add to cart</button>
+                                <button class="update-cart" data-meal_id="{{dinner_platter_size.id}}">Add to cart</button>
                             </td>
     
                         {% endfor %}
@@ -163,12 +163,30 @@
     </div>
 
     <div class="cart-view">
+        {% csrf_token %}
         <div class="cart-container">
-            <div class="cart-items">
-                Shop items should go here
+            <div class="cart-title"> 
+                Cart
             </div>
-            <button class='button button-checkout'>Checkout</button>
+            <button class='button button-return'>Return to menu</button>
+            <hr>
+            <div class="cart-area"></div>
+            <div class="total">
+                TOTAL: <span class="total-value"></span>
+            </div>
+            <button class='button button-checkout' disabled>Checkout</button>
         </div>
-        
+    </div>
+
+    <div class="confirm-view">
+        <div class="confirm-container">
+            <div class="confirm-message">
+                Do you confirm your purchase?
+            </div>
+            <div class="confirm-button_group">
+                <button class="button button-confirm">Confirm</button>
+                <button class="button button-reject-confirmation">Retun to cart</button>
+            </div>
+        </div>
     </div>
 {% endblock %}

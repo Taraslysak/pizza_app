@@ -19,5 +19,8 @@
     </header>
     <hr>
     {% block main %}{% endblock %}
-    <script src="{% static 'orders/scripts/script.js' %}"></script>
+    
+    <script type="module" src="{% static 'orders/scripts/cart.js' %}"></script>
+    <script type="module" src="{% static 'orders/scripts/confirmWindow.js' %}"></script>
+    <script type="module" src="{% static 'orders/scripts/script.js' %}"></script>
 </body>

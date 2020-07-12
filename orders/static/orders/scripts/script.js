@@ -1,11 +1,20 @@
-enableLogoutButton()
+import {Cart} from './cart.js'
+import {ConfirmWindow} from './confirmWindow.js'
+
+renderLogoutButton()
 addCartStatusListener()
 
-document.querySelector('.cart-icon-button').onclick = showCart
-document.querySelector('.button-checkout').onclick = hideCart
+document.querySelector('.cart-icon-button').onclick = Cart.show;
 
-function enableLogoutButton(){
+document.querySelector('.button-return').onclick = Cart.hide;
+document.querySelector('.button-checkout').onclick = ConfirmWindow.show;
+document.querySelector('.button-confirm').onclick = ConfirmWindow.confirmPurchase;
+document.querySelector('.button-reject-confirmation').onclick = ConfirmWindow.hide;
+
+
+function renderLogoutButton(){
     let logoutButton = document.querySelector('.button-logout');
+    
     if (window.location.pathname === '/login'){
 
         logoutButton.innerHTML = 'Register'
@@ -34,51 +43,6 @@ function enableLogoutButton(){
 
 function addCartStatusListener(){
     document.querySelectorAll('.update-cart').forEach(updateButton => {
-        return updateButton.onclick = updateCart;
+        return updateButton.onclick = Cart.addItem;
     })
-}
-
-
- function updateCart(){
-    //updateCartStatusCounter();
-    fetch(`update-cart/${parseInt(this.dataset.meal)}`)
-    .then(response => response.json())
-    .then(data => {
-        updateCartStatusCounter();
-        return console.log(data.answer);
-    })
- }
-
-
-function updateCartStatusCounter(){
-    cartIcon = getCartIcon()
-    cartIcon.innerHTML ++;
-     
-}
-
-
-function resetCartSatusCounter(){
-    cartIcon = getCartIcon()
-    cartIcon.innerHTML = null
-}
-
-
-function getCartIcon(){
-    try{
-        var cartIcon = document.querySelector('.cart-status');
-        return cartIcon
-    }
-    catch (error){
-        console.log(error);
-    }
-}
-
-function showCart(){
-    document.querySelector('.cart-view').style.display = 'block'
-    console.log('shown')
-}
-
-function hideCart(){
-    document.querySelector('.cart-view').style.display = 'none'
-    console.log('hidden')
 }

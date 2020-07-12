@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_USE_SESSIONS = True
 ROOT_URLCONF = 'pizza.urls'
 
 TEMPLATES = [

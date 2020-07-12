@@ -32,6 +32,14 @@ class Meal(models.Model):
     def __str__(self):
         return f'{self.name} {self.meal_type} - {self.price} USD'
 
+    def display_as_dict(self):
+        result = {
+            'type': self.meal_type.meal_type,
+            'name': self.name,
+            'price': self.price
+        }
+        return result
+
     @classmethod
     def display_as_menu(cls):
         return cls.objects.all()
@@ -43,6 +51,14 @@ class Pizza(Meal):
 
     def __str__(self):
         return f'{self.size} {self.name} {self.meal_type} with {self.option} - {self.price} USD'
+
+    def display_as_dict(self):
+        result = super().display_as_dict()
+        result.update({'option': self.option.option,
+                    'size': self.size.size,
+                    'toppings_quantity': self.option.toppings_quantity})
+        return result
+                   
 
     @classmethod
     def display_as_menu(cls):
@@ -77,6 +93,15 @@ class Sub(Meal):
     def __str__(self):
         return f'{self.size} {self.name} {self.meal_type} - {self.price} USD. Extras allowed: {self.additional_extras}'
     
+    def display_as_dict(self):
+        return {
+                    'type': self.meal_type.meal_type,
+                    'name': self.name,
+                    'size': self.size.size,
+                    'price': self.price,
+                    'additional_extras': self.additional_extras
+                }
+
     @classmethod
     def display_as_menu(cls):
 
@@ -115,6 +140,14 @@ class DinnerPlatter(Meal):
     def __str__(self):
         return f'{self.size} {self.name} {self.meal_type} - {self.price} USD'
 
+    def display_as_dict(self):
+        return {
+                    'type': self.meal_type.meal_type,
+                    'name': self.name,
+                    'size': self.size.size,
+                    'price': self.price
+                }
+
     @classmethod
     def display_as_menu(cls):
 
@@ -152,6 +185,14 @@ class SubExtra(Additive):
 
     def __str__(self):
         return f'{self.name}. Additional: {self.additional}. Price: {self.price}'
+    
+    @classmethod
+    def basic_dict(cls):
+        return [{'name': extra.name, 'price': extra.price, 'id': extra.id} for extra in cls.objects.filter(additional=False)]
+
+    @classmethod
+    def additional_dict(cls):
+        return [{'name': extra.name, 'price': extra.price, 'id': extra.id} for extra in cls.objects.filter(additional=True)]
 
 
 class Order(models.Model):
@@ -161,21 +202,26 @@ class Order(models.Model):
     closed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Order {self.id}. Customer: {self.customer}. Order issued: {self.issued}. Order closed: {self.closed}. Items: {self.items.get_queryset()}'
+        return f'Order {self.id}. Customer: {self.customer}. Order issued: {self.issued}. Order closed: {self.closed}. Items: {self.items.get_queryset()}. Total price: {self.total_price}'
+
+    def calculate_total(self):
+        total = self.items.aggregate(models.Sum('meal__price'))
+        return round(total['meal__price__sum'], 2)
 
     @classmethod
     def get_items_count(cls, **kwargs):
         try:
-            query_result = cls.objects.get(**kwargs).items.count()
+            order = cls.objects.get(**kwargs)
+            query_result = order.items.count()
             return query_result
-        except query_result.DoesNotExist:
+        except Order.DoesNotExist:
             return None
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name='items')
     meal = models.ForeignKey(Meal, on_delete=models.CASCADE, blank=True, related_name='in_orders')
-    additive = models.ManyToManyField(Additive, blank=True, related_name='in_orders')
+    additives = models.ManyToManyField(Additive, blank=True, related_name='in_orders')
 
     def __str__(self):
         return f'Meal: {self.meal}'

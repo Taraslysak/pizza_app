@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MealSize, Meal, DinnerPlatter, MealType, Pizza, PizzaOption, Salad, Pasta, Sub, PizzaTopping, SubExtra
+from .models import MealSize, Meal, DinnerPlatter, MealType, Pizza, PizzaOption, Salad, Pasta, Sub, PizzaTopping, SubExtra, Order, OrderItem
 
 # admin.site.register(Meal_size)
 # admin.site.register(Topping)
@@ -59,6 +59,11 @@ class SubExtra_Admin(Additive_Admin):
     list_display = ('name', 'additional', 'price')
     list_filter = ['additional']
     fields = ['name', 'additional', 'price']
+
+
+@admin.register(Order)
+class Order_Admin(admin.ModelAdmin):
+    list_display = ('id', 'customer', 'issued', 'closed', 'total_price')
 
 
 
